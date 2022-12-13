@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "ts-node": {
+    "esm": true,
+    "swc": true
+  }
+}
