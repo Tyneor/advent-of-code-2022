@@ -1,9 +1,8 @@
 import { exit } from "process";
 import { read } from "./shared/index.js";
 
-const debug = process.argv[2] === "debug";
-const dayIndex = parseInt(process.argv[3]);
-const puzzleIndex = parseInt(process.argv[4]);
+const dayIndex = parseInt(process.argv[2]);
+const puzzleIndex = parseInt(process.argv[3]);
 
 if (isNaN(dayIndex) || (puzzleIndex !== 1 && puzzleIndex !== 2)) {
   console.group("Wrong arguments:");
@@ -15,5 +14,5 @@ if (isNaN(dayIndex) || (puzzleIndex !== 1 && puzzleIndex !== 2)) {
 }
 
 const { firstSolve, secondSolve }: { firstSolve: Solver; secondSolve: Solver } = await import(`./day${dayIndex}/index.ts`);
-const input = await read(import.meta.url, `./day${dayIndex}/${debug ? "example" : "input"}.txt`);
+const input = await read(import.meta.url, `./day${dayIndex}/input.txt`);
 console.log(puzzleIndex === 1 ? firstSolve(input) : secondSolve(input));

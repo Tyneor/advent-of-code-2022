@@ -2,10 +2,10 @@
   "name": "advent-of-code-2022",
   "type": "module",
   "scripts": {
-    "debug": "nodemon -w src ./src/index.ts debug",
-    "solve": "ts-node ./src/index.ts solve",
-    "test": "vitest run",
-    "coverage": "vitest run --coverage"
+    "solve": "ts-node ./src/index.ts",
+    "debug": "vitest",
+    "coverage": "vitest run --coverage",
+    "debug-old": "nodemon -w src ./src/index.ts"
   },
   "devDependencies": {
     "@swc/core": "^1.3.22",

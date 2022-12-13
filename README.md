@@ -1,6 +1,6 @@
 ## Commands
 
-- While solving a problem: `pnpm debug`
+- While solving a problem: `pnpm debug <dayIndex> -t <first|second>`
 - To solve a problem once: `pnpm solve`
 
 ## Dependencies
