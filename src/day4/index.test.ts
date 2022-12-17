@@ -4,11 +4,10 @@ import day from "./index.js";
 
 test("first part", async () => {
   const result = day.firstSolve(await readExample(import.meta.url));
-  expect(result).toBe(0);
+  expect(result).toBe(2);
 });
 
 test("second part", async () => {
   const result = day.secondSolve(await readExample(import.meta.url));
-  expect(result).toBe(0);
+  expect(result).toBe(4);
 });
-
