@@ -13,6 +13,8 @@ if (isNaN(dayIndex) || (puzzleIndex !== 1 && puzzleIndex !== 2)) {
   exit(1);
 }
 
-const { firstSolve, secondSolve }: { firstSolve: Solver; secondSolve: Solver } = await import(`./day${dayIndex}/index.ts`);
+const { default: day }: { default: Day } = await import(`./day${dayIndex}/index.ts`);
+console.log(day);
+
 const input = await read(import.meta.url, `./day${dayIndex}/input.txt`);
-console.log(puzzleIndex === 1 ? firstSolve(input) : secondSolve(input));
+console.log(puzzleIndex === 1 ? day.firstSolve(input) : day.secondSolve(input));

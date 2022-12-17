@@ -3,7 +3,8 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ESNext",
-    "outDir": "dist"
+    "outDir": "dist",
+    "strict": true
   },
   "include": ["src/**/*"],
   "ts-node": {

@@ -1,6 +1,7 @@
 ## Commands
 
-- While solving a problem: `pnpm debug <dayIndex> -t <first|second>`
+- To start a new day: wake up and `bash ./scripts/new-day.sh <dayIndex>`
+- While solving a problem: `pnpm debug day<dayIndex> -t <first|second>`
 - To solve a problem once: `pnpm solve <dayIndex> <puzzleIndex (1 or 2)>`
 
 ## Dependencies
