@@ -19,7 +19,7 @@ export default {
       return [new Set(line.slice(0, line.length / 2)), new Set(line.slice(line.length / 2))];
     };
 
-    const intersections = input.map(createRucksackList).map(rucksackIntersection).map(convertToPriority);
+    const intersections = input.split("\n").map(createRucksackList).map(rucksackIntersection).map(convertToPriority);
     return sum(intersections);
   },
 
@@ -31,7 +31,7 @@ export default {
       );
     };
 
-    const intersections = createRucksackList(input).map(rucksackIntersection).map(convertToPriority);
+    const intersections = createRucksackList(input.split("\n")).map(rucksackIntersection).map(convertToPriority);
     return sum(intersections);
   },
 } satisfies Day;

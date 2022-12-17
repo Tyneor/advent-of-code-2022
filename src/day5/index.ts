@@ -33,15 +33,15 @@ const executeInstructions = (ship: Ship, instructions: Instruction[], useCrateMo
   }
 };
 
-const solve = (input: string[], useCrateMover9001 = false) => {
-  const emptyIndex = input.findIndex((line) => line === "");
-  const ship = parseShip(input.slice(0, emptyIndex - 1));
-  const instructions = parseInstructions(input.slice(emptyIndex + 1));
+const solve = (lines: string[], useCrateMover9001 = false) => {
+  const emptyIndex = lines.findIndex((line) => line === "");
+  const ship = parseShip(lines.slice(0, emptyIndex - 1));
+  const instructions = parseInstructions(lines.slice(emptyIndex + 1));
   executeInstructions(ship, instructions, useCrateMover9001);
   return ship.map((stack) => stack[0]).join("");
 };
 
 export default {
-  firstSolve: (input) => solve(input),
-  secondSolve: (input) => solve(input, true),
+  firstSolve: (input) => solve(input.split("\n")),
+  secondSolve: (input) => solve(input.split("\n"), true),
 } satisfies StringDay;

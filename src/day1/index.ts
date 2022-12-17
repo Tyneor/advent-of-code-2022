@@ -4,12 +4,12 @@ const buildElves = (lines: string[]) => {
 
 export default {
   firstSolve: (input) => {
-    const elves = buildElves(input);
+    const elves = buildElves(input.split("\n"));
     return Math.max(...elves);
   },
 
   secondSolve: (input) => {
-    const elves = buildElves(input);
+    const elves = buildElves(input.split("\n"));
     const sortedElves = elves.sort((caloriesA, caloriesB) => caloriesB - caloriesA);
     return sortedElves[0] + sortedElves[1] + sortedElves[2];
   },

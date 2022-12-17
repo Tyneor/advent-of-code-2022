@@ -16,7 +16,7 @@ export default {
       return player === "X" ? 6 : player === "Y" ? 0 : 3;
     };
 
-    return computeFinalScore(input, computeBaseScore, computeMatchScore);
+    return computeFinalScore(input.split("\n"), computeBaseScore, computeMatchScore);
   },
 
   secondSolve: (input) => {
@@ -28,6 +28,6 @@ export default {
       return player === "X" ? 2 : player === "Y" ? 3 : 1;
     };
 
-    return computeFinalScore(input, computeBaseScore, computeMatchScore);
+    return computeFinalScore(input.split("\n"), computeBaseScore, computeMatchScore);
   },
 } satisfies Day;

@@ -15,12 +15,18 @@ const areElvesOverlapping = (outer: Elf, inner: Elf) => {
 
 export default {
   firstSolve: (input) => {
-    const nestedPairs = input.map(parseTwoElves).filter(([elf1, elf2]) => areElvesNesting(elf1, elf2) || areElvesNesting(elf2, elf1));
+    const nestedPairs = input
+      .split("\n")
+      .map(parseTwoElves)
+      .filter(([elf1, elf2]) => areElvesNesting(elf1, elf2) || areElvesNesting(elf2, elf1));
     return nestedPairs.length;
   },
 
   secondSolve: (input) => {
-    const overlappingPairs = input.map(parseTwoElves).filter(([elf1, elf2]) => areElvesOverlapping(elf1, elf2) || areElvesOverlapping(elf2, elf1));
+    const overlappingPairs = input
+      .split("\n")
+      .map(parseTwoElves)
+      .filter(([elf1, elf2]) => areElvesOverlapping(elf1, elf2) || areElvesOverlapping(elf2, elf1));
     return overlappingPairs.length;
   },
 } satisfies Day;

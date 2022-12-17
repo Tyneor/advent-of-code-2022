@@ -1,8 +1,8 @@
 import { readFile } from "fs/promises";
 
 export const read = async (url: string, filename: string) => {
-  const file = await readFile(new URL(filename, url), `utf-8`);
-  return file.split(`\n`);
+  return readFile(new URL(filename, url), `utf-8`);
+  // return file.split(`\n`); no splitting since some challenges have only string as an input
 };
 export const readExample = async (url: string) => read(url, "./example.txt");
 export const readInput = async (url: string) => read(url, "./input.txt");
