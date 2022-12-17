@@ -5,6 +5,7 @@ export const read = async (url: string, filename: string) => {
   return file.split(`\n`);
 };
 export const readExample = async (url: string) => read(url, "./example.txt");
+export const readInput = async (url: string) => read(url, "./input.txt");
 
 export const intersect = <T>(...sets: Set<T>[]): Set<T> => {
   if (sets.length === 0) return new Set();
