@@ -18,3 +18,5 @@ export const sum = (numbers: number[]): number => numbers.reduce((total, number)
 export const chunk = <T>(array: T[], chunkSize: number): T[][] => {
   return array.length <= chunkSize ? [array] : [array.slice(0, chunkSize), ...chunk(array.slice(chunkSize), chunkSize)];
 };
+
+export const rotated = <T>(matrix: T[][]) => matrix[0].map((_, i) => matrix.map((row) => row[i]));
