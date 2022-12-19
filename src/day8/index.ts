@@ -44,4 +44,4 @@ export default {
     }
     return Math.max(...res.map((row) => Math.max(...row)));
   },
-} satisfies NumberDay;
+} satisfies Day;

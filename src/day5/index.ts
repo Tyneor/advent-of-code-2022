@@ -44,4 +44,4 @@ const solve = (lines: string[], useCrateMover9001 = false) => {
 export default {
   firstSolve: (input) => solve(input.split("\n")),
   secondSolve: (input) => solve(input.split("\n"), true),
-} satisfies StringDay;
+} satisfies Day;

@@ -9,4 +9,4 @@ const solve = (input: string, startOfPacketLength = 4 | 14): number => {
 export default {
   firstSolve: (input) => solve(input, 4),
   secondSolve: (input) => solve(input, 14),
-} satisfies NumberDay;
+} satisfies Day;
