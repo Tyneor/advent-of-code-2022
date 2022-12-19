@@ -28,8 +28,7 @@ const moveKnot = (knot: Position, ahead: Position) => {
 
 class PositionSet extends Set {
   addPosition(position: Position) {
-    this.add(`${position.x},${position.y}`);
-    return this;
+    return this.add(`${position.x},${position.y}`);
   }
 }
 
