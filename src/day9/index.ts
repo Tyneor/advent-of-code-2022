@@ -65,4 +65,4 @@ export default {
     });
     return visitedByTailPositions.size;
   },
-} satisfies Day;
+} satisfies Day<number, number>;

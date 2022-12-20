@@ -1,2 +1,2 @@
-type Solver = (input: string) => number | string;
-type Day = { firstSolve: Solver; secondSolve: Solver };
+type Solver<T> = (input: string) => T;
+type Day<F, S> = { firstSolve: Solver<F>; secondSolve: Solver<S> };

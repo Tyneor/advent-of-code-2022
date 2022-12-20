@@ -29,4 +29,4 @@ export default {
       .filter(([elf1, elf2]) => areElvesOverlapping(elf1, elf2) || areElvesOverlapping(elf2, elf1));
     return overlappingPairs.length;
   },
-} satisfies Day;
+} satisfies Day<number, number>;

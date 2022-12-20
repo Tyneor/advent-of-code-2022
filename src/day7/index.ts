@@ -69,4 +69,4 @@ export default {
     const remainingRequiredSpace = REQUIRED_SPACE + totalSpaceUsed - DISK_SPACE;
     return findSmallestDirAboveThreshold(root, remainingRequiredSpace);
   },
-} satisfies Day;
+} satisfies Day<number, number>;

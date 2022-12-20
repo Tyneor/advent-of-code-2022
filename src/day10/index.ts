@@ -24,6 +24,6 @@ export default {
   },
 
   secondSolve: (input) => {
-    return 0;
+    return "0";
   },
-} satisfies Day;
+} satisfies Day<number, string>;

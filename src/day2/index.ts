@@ -30,4 +30,4 @@ export default {
 
     return computeFinalScore(input.split("\n"), computeBaseScore, computeMatchScore);
   },
-} satisfies Day;
+} satisfies Day<number, number>;

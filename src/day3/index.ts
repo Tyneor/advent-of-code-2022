@@ -34,4 +34,4 @@ export default {
     const intersections = createRucksackList(input.split("\n")).map(rucksackIntersection).map(convertToPriority);
     return sum(intersections);
   },
-} satisfies Day;
+} satisfies Day<number, number>;

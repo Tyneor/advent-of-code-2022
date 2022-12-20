@@ -13,4 +13,4 @@ export default {
     const sortedElves = elves.sort((caloriesA, caloriesB) => caloriesB - caloriesA);
     return sortedElves[0] + sortedElves[1] + sortedElves[2];
   },
-} satisfies Day;
+} satisfies Day<number, number>;
