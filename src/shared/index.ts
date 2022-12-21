@@ -14,6 +14,7 @@ export const intersect = <T>(...sets: Set<T>[]): Set<T> => {
 };
 
 export const sum = (numbers: number[]): number => numbers.reduce((total, number) => total + number, 0);
+export const product = (numbers: number[]): number => numbers.reduce((total, number) => total * number, 1);
 
 export const chunk = <T>(array: T[], chunkSize: number): T[][] => {
   return array.length <= chunkSize ? [array] : [array.slice(0, chunkSize), ...chunk(array.slice(chunkSize), chunkSize)];

@@ -1,0 +1,13 @@
+import { expect, test } from "vitest";
+import { readExample } from "../shared/index.js";
+import day from "./index.js";
+
+test("first part", async () => {
+  const result = day.firstSolve(await readExample(import.meta.url));
+  expect(result).toBe(10605);
+});
+
+test("second part", async () => {
+  const result = day.secondSolve(await readExample(import.meta.url));
+  expect(result).toBe(2713310158);
+});
