@@ -21,3 +21,10 @@ export const chunk = <T>(array: T[], chunkSize: number): T[][] => {
 };
 
 export const rotated = <T>(matrix: T[][]) => matrix[0].map((_, i) => matrix.map((row) => row[i]));
+
+//** from and to will be in the range */
+export const range = (from: number, to: number) => {
+  const start = Math.min(from, to);
+  const end = Math.max(from, to);
+  return new Array(end + 1 - start).fill(1).map((d, i) => i + start);
+};
