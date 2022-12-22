@@ -1,24 +1,22 @@
 type Node = {
   height: number;
   neighbours: Node[];
-  distanceFromStart: number;
+  distanceToEnd: number;
   visited: boolean;
-  isEnd: boolean;
+  isStart: boolean;
   debugPosition?: [number, number];
-  // previousNode: Node
 };
 
-const parseInput = (input: string, multipleStarts = false): [Node[], Node[][]] => {
+const parseInput = (input: string): [Node[], Node[][]] => {
   const grid: Node[][] = input.split("\n").map((row) =>
     row.split("").map((char): Node => {
       const code = char.charCodeAt(0);
-      const distanceFromStart = code === 83 || (multipleStarts && code == 97) ? 0 : +Infinity;
       return {
         height: code === 83 ? 0 : code === 69 ? 25 : char.charCodeAt(0) - 97,
         neighbours: [],
-        distanceFromStart,
+        distanceToEnd: code === 69 ? 0 : +Infinity,
         visited: false,
-        isEnd: code === 69,
+        isStart: code === 83,
       };
     })
   );
@@ -32,23 +30,20 @@ const parseInput = (input: string, multipleStarts = false): [Node[], Node[][]] =
         [0, -1],
         [0, 1],
       ];
-      potentialNeighbourPositions.forEach((position) => {
-        const potentialNeighbour = grid[rowIndex + position[0]]?.[colIndex + position[1]];
-        if (potentialNeighbour && potentialNeighbour.height - 1 <= node.height) {
-          node.neighbours.push(potentialNeighbour);
-        }
-      });
+      node.neighbours = potentialNeighbourPositions
+        .map((position) => grid[rowIndex + position[0]]?.[colIndex + position[1]])
+        .filter((potentialNeighbour) => potentialNeighbour && potentialNeighbour.height + 1 >= node.height);
     });
   });
   return [grid.flat(), grid];
 };
 
-const findIndexClosestToStart = (nodes: Node[]): number => {
+const findIndexClosestToEnd = (nodes: Node[]): number => {
   let closestNodeIndex = 0;
-  let smallestDistance = nodes[closestNodeIndex].distanceFromStart;
+  let smallestDistance = nodes[closestNodeIndex].distanceToEnd;
   for (let index = 1; index < nodes.length; index++) {
-    if (nodes[index].distanceFromStart < smallestDistance) {
-      smallestDistance = nodes[index].distanceFromStart;
+    if (nodes[index].distanceToEnd < smallestDistance) {
+      smallestDistance = nodes[index].distanceToEnd;
       closestNodeIndex = index;
     }
   }
@@ -59,58 +54,38 @@ const visitNode = (node: Node) => {
   node.visited = true;
   node.neighbours.forEach((neighbour) => {
     if (!neighbour.visited) {
-      neighbour.distanceFromStart = Math.min(neighbour.distanceFromStart, node.distanceFromStart + 1);
+      neighbour.distanceToEnd = Math.min(neighbour.distanceToEnd, node.distanceToEnd + 1);
     }
   });
 };
 
-const runDijkstra = (nodes: Node[], debugGrid?: Node[][]): number => {
+function runDijkstra<T extends boolean>(nodes: Node[], forAllNode: T, debugCallback?: () => void): T extends true ? Node[] : number;
+function runDijkstra(nodes: Node[], forAllNodes = false, debugCallback?: () => void): Node[] | number {
+  const visitedNodes: Node[] = [];
   while (nodes.length > 0) {
-    const closestNodeIndex = findIndexClosestToStart(nodes);
+    const closestNodeIndex = findIndexClosestToEnd(nodes);
     const node = nodes[closestNodeIndex];
-    if (node.isEnd) return node.distanceFromStart;
+    if (forAllNodes) visitedNodes.push(node);
+    else if (node.isStart) return node.distanceToEnd;
     nodes.splice(closestNodeIndex, 1);
     visitNode(node);
-    // console.log(node.debugPosition);
-    // console.table(debugGrid.map((row) => row.map((node) => node.distanceFromStart)));
+    if (debugCallback) debugCallback();
   }
+  if (forAllNodes) return visitedNodes;
   throw new Error("Distance to end not found");
-};
-
-const duplicateNodes = (nodes: Node[]): Node[] => {
-  const neighboursIndex = nodes.map((node) => node.neighbours.map((neighbour) => nodes.indexOf(neighbour)));
-  const copiedNodes = nodes.map(
-    (node): Node => ({
-      height: node.height,
-      distanceFromStart: node.distanceFromStart,
-      visited: node.visited,
-      isEnd: node.isEnd,
-      debugPosition: node.debugPosition,
-      neighbours: [],
-    })
-  );
-  copiedNodes.forEach((node, nodeIndex) => {
-    node.neighbours = neighboursIndex[nodeIndex].map((neighbourIndex) => copiedNodes[neighbourIndex]);
-  });
-  return copiedNodes;
-};
+}
 
 export default {
   firstSolve: (input) => {
     const [nodes, debugGrid] = parseInput(input);
-    const distanceStartToEnd = runDijkstra(nodes, debugGrid);
+    const distanceStartToEnd = runDijkstra(nodes, false);
+    // const distanceStartToEnd = runDijkstra(nodes, false, () => console.table(debugGrid?.map((row) => row.map((node) => node.distanceToEnd))));
     return distanceStartToEnd;
   },
 
   secondSolve: (input) => {
-    const [nodes, _] = parseInput(input, true);
-    const potentialStarts = nodes.filter((node) => node.distanceFromStart === 0);
-    nodes.forEach((node) => (node.distanceFromStart = +Infinity));
-    const distances = potentialStarts.map((potentialStart, i) => {
-      // console.log(i + "/" + potentialStarts.length);
-      potentialStart.distanceFromStart = 0;
-      return runDijkstra(duplicateNodes(nodes));
-    });
-    return Math.min(...distances);
+    const [nodes, _] = parseInput(input);
+    const visitedNodes = runDijkstra(nodes, true);
+    return Math.min(...visitedNodes.filter((node) => node.height === 0).map((node) => node.distanceToEnd));
   },
 } satisfies Day<number, number>;
