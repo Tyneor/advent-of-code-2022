@@ -13,6 +13,10 @@ export const intersect = <T>(...sets: Set<T>[]): Set<T> => {
   return intersect(new Set(Array.from(sets[0]).filter((x) => sets[1].has(x))), ...sets.slice(2));
 };
 
+export const union = <T>(...sets: Set<T>[]): Set<T> => {
+  return new Set(sets.map((set) => [...set]).flat());
+};
+
 export const sum = (numbers: number[]): number => numbers.reduce((total, number) => total + number, 0);
 export const product = (numbers: number[]): number => numbers.reduce((total, number) => total * number, 1);
 
