@@ -9,5 +9,5 @@ test("first part", async () => {
 
 test("second part", async () => {
   const result = day.secondSolve(await readExample(import.meta.url), 20);
-  expect(result).toBe(14 * 4000000 + 11);
+  expect(await result).toBe(14 * 4000000 + 11);
 });

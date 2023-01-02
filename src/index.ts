@@ -15,4 +15,4 @@ if (isNaN(dayIndex) || (puzzleIndex !== 1 && puzzleIndex !== 2)) {
 
 const { default: day }: { default: Day<any, any> } = await import(`./day${dayIndex}/index.ts`);
 const input = await read(import.meta.url, `./day${dayIndex}/input.txt`);
-console.log(puzzleIndex === 1 ? day.firstSolve(input) : day.secondSolve(input));
+console.log(puzzleIndex === 1 ? await day.firstSolve(input) : await day.secondSolve(input));
