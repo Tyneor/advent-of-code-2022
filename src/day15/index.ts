@@ -5,6 +5,10 @@ type Position = { x: number; y: number };
 
 type Sensor = Position & { range: number };
 
+const manhattanDistance = (pos1: Position, pos2: Position): number => {
+  return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
+};
+
 const parseSensorAndBeacon = (line: string): [Sensor, Position] => {
   const regex = /.*x=(-?[0-9]*), y=(-?[0-9]*).*x=(-?[0-9]*), y=(-?[0-9]*)/;
   const result = regex
@@ -12,10 +16,9 @@ const parseSensorAndBeacon = (line: string): [Sensor, Position] => {
     ?.slice(1, 5)
     .map((nb) => parseInt(nb));
   if (!result) throw new Error();
-  return [
-    { x: result[0], y: result[1], range: Math.abs(result[0] - result[2]) + Math.abs(result[1] - result[3]) },
-    { x: result[2], y: result[3] },
-  ];
+  const sensor = { x: result[0], y: result[1] };
+  const beacon = { x: result[2], y: result[3] };
+  return [{ ...sensor, range: manhattanDistance(sensor, beacon) }, beacon];
 };
 
 const visionOnRow = (sensor: Sensor, rowIndex: number): number[] => {
@@ -24,14 +27,35 @@ const visionOnRow = (sensor: Sensor, rowIndex: number): number[] => {
   return range(sensor.x - (sensor.range - distanceSensorRow), sensor.x + (sensor.range - distanceSensorRow));
 };
 
-const inequation = (sensor: Sensor): void => {
-  console.log(sensor);
+function* sensorVisionBorder(sensor: Sensor) {
+  let x = sensor.x + 1;
+  let y = sensor.y - sensor.range;
+  let xIncrement = 1;
+  let yIncrement = 1;
+  while (true) {
+    yield { x, y } as Position;
+    if (manhattanDistance(sensor, { x: x + xIncrement, y: y + yIncrement }) >= sensor.range + 2) {
+      if (xIncrement === yIncrement) xIncrement = -xIncrement;
+      else if (yIncrement === 1) yIncrement = -1;
+      else break;
+    }
+    x += xIncrement;
+    y += yIncrement;
+  }
+}
+
+const hasDistressBeacon = (position: Position, sensors: Sensor[], searchSpaceWidth: number): boolean => {
+  if (position.x < 0 || position.y < 0 || position.x > searchSpaceWidth || position.y > searchSpaceWidth) return false;
+  for (const sensor of sensors) {
+    if (manhattanDistance(sensor, position) <= sensor.range) return false;
+  }
+  return true;
 };
 
 export default {
   firstSolve: (input, studiedRowIndex = 2000000) => {
     const lines = input.split("\n");
-    const sensorsAndBeacons = lines.slice(1).map(parseSensorAndBeacon);
+    const sensorsAndBeacons = lines.map(parseSensorAndBeacon);
     const ranges = sensorsAndBeacons.map(([sensor, _]) => visionOnRow(sensor, studiedRowIndex));
     const positions = new Set(ranges.flat());
     const beaconsOnRow = sensorsAndBeacons.map(([_, beacon]) => beacon).filter((beacon) => beacon.y === studiedRowIndex);
@@ -41,46 +65,47 @@ export default {
 
   secondSolve: async (input, searchSpaceWidth = 4000000) => {
     const lines = input.split("\n");
-    const sensors = lines.slice(1).map((line) => parseSensorAndBeacon(line)[0]);
-    const { Context } = await init();
-    const { Solver, Int, If } = new (Context as any)("main") as Context;
-    const Abs = (x: Arith) => If(x.ge(0), x, x.neg());
+    const sensors = lines.map((line) => parseSensorAndBeacon(line)[0]);
 
-    const solver = new Solver();
-    const x = Int.const("x");
-    const y = Int.const("y");
+    {
+      // Running around the borders method
+      for (const sensor of sensors) {
+        // using a generator is about 30% slower on my machine
+        for (const position of sensorVisionBorder(sensor)) {
+          if (hasDistressBeacon(position, sensors, searchSpaceWidth)) {
+            return position.x * 4000000 + position.y;
+          }
+        }
+      }
+      throw new Error("beacon not found");
+    }
 
-    solver.add(x.ge(0));
-    solver.add(x.le(searchSpaceWidth));
-    solver.add(y.ge(0));
-    solver.add(y.le(searchSpaceWidth));
+    {
+      // Z3 method
+      const { Context } = await init();
+      const { Solver, Int, If } = new (Context as any)("main") as Context;
+      const Abs = (x: Arith) => If(x.ge(0), x, x.neg());
 
-    sensors.forEach((sensor) => {
-      console.log(sensor);
+      const solver = new Solver();
+      const x = Int.const("x");
+      const y = Int.const("y");
+      solver.add(x.ge(0));
+      solver.add(x.le(searchSpaceWidth));
+      solver.add(y.ge(0));
+      solver.add(y.le(searchSpaceWidth));
 
-      solver.add(
-        Abs(x.sub(sensor.x))
-          .add(Abs(y.sub(sensor.y)))
-          .gt(sensor.range)
-      );
-    });
+      for (const sensor of sensors) {
+        solver.add(
+          Abs(x.sub(sensor.x))
+            .add(Abs(y.sub(sensor.y)))
+            .gt(sensor.range)
+        );
+      }
 
-    console.log(await solver.check());
-    const res = solver.model();
-    console.log(res.get(x).sexpr());
-    console.log(res.get(y).sexpr());
-
-    // const xs = [0, ...sensors.map((s) => s.x).sort((a, b) => a - b), searchSpaceWidth + 1];
-    // const ys = [0, ...sensors.map((s) => s.y).sort((a, b) => a - b), searchSpaceWidth + 1];
-    // for (let ix = 1; ix < xs.length; ix++) {
-    //   for (let iy = 1; iy < ys.length; iy++) {
-    //     if (xs[ix - 1] < xs[ix] && ys[iy - 1] < ys[iy]) {
-    //       console.log(`${xs[ix - 1]} <= x < ${xs[ix]} and ${ys[iy - 1]} <= y < ${ys[iy]}`);
-    //       sensors.forEach(inequation);
-    //     }
-    //   }
-    // }
-
-    return parseInt(res.get(x).sexpr()) * 4000000 + parseInt(res.get(y).sexpr());
+      if ((await solver.check()) !== "sat") throw new Error("beacon not found");
+      const res = solver.model();
+      const position: Position = { x: parseInt(res.get(x).sexpr()), y: parseInt(res.get(y).sexpr()) };
+      return position.x * 4000000 + position.y;
+    }
   },
 } satisfies Day<number, number>;
